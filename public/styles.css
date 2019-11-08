@@ -1,0 +1,17 @@
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+input {
+    margin: 10px auto;
+}
+
+#signature {
+    display: none;
+}
+
+#canvas {
+    border: 3px red solid;
+}
