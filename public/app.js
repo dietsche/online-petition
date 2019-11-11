@@ -22,7 +22,7 @@ $("#canvas").on("mouseup", function() {
     drawing = false;
     canvasData = canvas.toDataURL("image/png");
     $("#signature").val(canvasData);
-    console.log(canvasData);
+    console.log("canvasData: ", canvasData);
     drawSignature();
 });
 
@@ -31,7 +31,7 @@ function drawSignature() {
         if (!drawing) {
             return;
         } else {
-            context.strokeStyle = "black";
+            context.strokeStyle = "darkblue";
             context.lineWidth = 3;
             context.beginPath();
             context.moveTo(prevPosition[0], prevPosition[1]);

@@ -1,20 +1,43 @@
-<h2>TESTTEST</h2>
+<div id="container-petition">
 
-<form method="post">
 
-<label for="">
-    First name
-    <input type="text" name="first_name" value="">
-</label>
-<label for="">
-    Last Name
-    <input type="text" name="last_name" value="">
-</label>
-<input name="signature" value="" id="signature">
+    <div class="headline">
+        <img src="img/carrot_large.png" class="carrot" alt="">
+        <h2>Petition for a carrot-cursor</h2>
+    </div>
 
-<canvas id="canvas" width="320" height="100"></canvas>
+    <div class="description">
+        <div class="">
+            <p>Support our petition for changing the default cursor to a carrot!</p>
+        </div>
+    </div>
 
-{{showError}}
 
-<button type="submit" name="submit">SEND</button>
-<form>
+    <form method="post">
+
+        <label for="">
+            First name
+            <input type="text" name="first_name" value="">
+        </label>
+        <label for="">
+            Last Name
+            <input type="text" name="last_name" value="">
+        </label>
+        <input type="hidden" name="signature" value="" id="signature">
+        <input type="hidden" name="_csrf" value="{{csrfToken}}">
+
+        <label for="">
+            <canvas id="canvas" width="320" height="100"></canvas>
+            Please sign here
+        </label>
+
+        <p id="error-message">
+            {{showError}}
+
+        </p>
+
+
+        <button type="submit" name="submit">SUBMIT</button>
+    <form>
+
+</div>

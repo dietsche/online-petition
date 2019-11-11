@@ -13,7 +13,13 @@ exports.countSignatures = function() {
 
 exports.addSignature = function(first_name, last_name, signature) {
     return db.query(
-        "INSERT INTO signatures (first, last, signature) VALUES ($1, $2, $3)", //$arg prevents SQL-injection!!!
+        "INSERT INTO signatures (first, last, signature) VALUES ($1, $2, $3) RETURNING id", //$arg prevents SQL-injection!!!
         [first_name, last_name, signature]
+    );
+};
+
+exports.getSignatureImage = function(id) {
+    return db.query(
+        `SELECT signature FROM signatures WHERE id = ${id}` //$arg prevents SQL-injection!!!
     );
 };

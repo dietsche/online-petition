@@ -1,17 +1,175 @@
+
+* {
+    font-family: Tahoma;
+    cursor: url(img/carrot.png) -10 30, auto;
+}
+
 body {
+    margin: 0;
+}
+
+
+#container-petition {
+    display: grid;
+    grid-template-rows: 100px 1fr 1fr;
+    grid-template-columns: 1fr 400px;
+    align-items: center;
+    background-image: url(img/rabbit_field2.jpg);
+    background-size: cover;
+    margin: 0;
+    padding: 30px;
+    height: 100vh;
+}
+
+.headline {
+    grid-area: 1 / 1 / 2 /3;
+    font-size: 26px;
+    font-weight: bolder;
+    color: rgb(229, 216, 191);
+    letter-spacing: 3px;
+    padding: 20px;
+    display: flex;
+}
+
+.headline img {
+position: relative;
+top: 20px;
+    height: 70px;
+
+}
+.description {
+    grid-area: 2 / 1 / 3 /2;
+    padding: 30px;
+    font-size: 26px;
+    color: rgb(229, 216, 191);
+    display: flex;
+    align-self: start;
+
+}
+
+
+
+form {
+    grid-area: 2 / 2 / 3 /4;
+
     display: flex;
     flex-direction: column;
-    align-items: center;
+    width: 350px;
+    /* height: 420px; */
+    background: rgba(200, 200, 200, .5);
+    border-radius: 4px;
+    padding: 30px;
+    color: rgb(70,70,70);
 }
 
 input {
-    margin: 10px auto;
+    margin: 15px 0 15px 10px;
+    padding: 5px;
+    border-radius: 3px;
+    width: 220px;
+    height: 30px;
+    font-size: 18px;
+
 }
 
-#signature {
-    display: none;
+canvas {
+    margin-top: 15px;
+    background: white;
+    border: 2px rgb(212, 212, 212) solid;
+    border-radius: 3px;
 }
 
-#canvas {
-    border: 3px red solid;
+button {
+    align-self: center;
+    width: 100px;
+    height: 40px;
+    border-radius: 3px;
+    border: 2px rgb(80,80,80) solid;
+    margin-top: 20px;
+    background: rgb(240,80,5);
+    color: white;
+    font-size: 18px;
+}
+
+
+#signature-image {
+     width: 180px;
+     height: 240px;
+     background-image: url(img/paper.png);
+     text-align: center;
+     padding: 10px;
+}
+
+#signature-image p {
+    font-size: 22px;
+    font-family: Garamond;
+}
+
+#signature-image img.signature {
+     width: 160px;
+     height: 50px;
+     margin-top: 30px;
+
+}
+
+
+
+#error-message {
+    color: red;
+}
+
+/* thank-you */
+
+#container-thank-you {
+    height: 100vh;
+    /* display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+    padding: 30px;
+    */
+
+    background-image: url(img/green_field.jpg);
+    font-size: 30px;
+    background-size: cover;
+}
+
+.layer {
+    width: 100%;
+    height: 100%;
+    background-color: rgba(250,250,250,.5);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+    padding: 30px;
+
+}
+
+#link-to-signers {
+    font-size: 18px;
+}
+
+
+/* SIGNERS */
+
+#container-signers {
+    display: grid;
+    grid-template-rows: 130px auto;
+    grid-template-columns: auto 400px;
+}
+
+#container-list {
+    grid-area: 2 / 2 / 3 /3;
+}
+
+#list-of-signers {
+    width: 350px;
+    height: 400px;
+    background: rgba(200, 200, 200, .5);
+    border-radius: 4px;
+    padding: 20px;
+    overflow-y: auto;
 }

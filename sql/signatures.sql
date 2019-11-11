@@ -8,3 +8,5 @@ CREATE TABLE signatures (
     signature TEXT NOT NULL CHECK (signature != ''),
     created_at TIMESTAMP
 );
+
+-- //modify the table: delte first and last; new COl "user_id" (foreign id!) (stored in a cookie!!!)
