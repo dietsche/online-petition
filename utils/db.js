@@ -11,10 +11,17 @@ exports.countSignatures = function() {
     return db.query("SELECT COUNT(*) FROM signatures");
 };
 
-exports.addSignature = function(first_name, last_name, signature) {
+exports.addUserData = function(first_name, last_name, email, hashed_password) {
     return db.query(
-        "INSERT INTO signatures (first, last, signature) VALUES ($1, $2, $3) RETURNING id", //$arg prevents SQL-injection!!!
-        [first_name, last_name, signature]
+        "INSERT INTO users (first, last, email, password) VALUES ($1, $2, $3, $4) RETURNING id",
+        [first_name, last_name, email, hashed_password]
+    );
+};
+
+exports.addSignature = function(signature, user_id) {
+    return db.query(
+        "INSERT INTO signatures (signature, user_id) VALUES ($1, $2) RETURNING user_id", //$arg prevents SQL-injection!!!
+        [signature, user_id]
     );
 };
 
@@ -22,4 +29,8 @@ exports.getSignatureImage = function(id) {
     return db.query(
         `SELECT signature FROM signatures WHERE id = ${id}` //$arg prevents SQL-injection!!!
     );
+};
+
+exports.getHashedPassword = function(email) {
+    return db.query(`SELECT password, id FROM users WHERE email = $1`, [email]);
 };

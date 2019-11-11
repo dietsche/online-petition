@@ -1,7 +1,7 @@
 
 * {
     font-family: Tahoma;
-    cursor: url(img/carrot.png) -10 30, auto;
+    /* cursor: url(img/carrot.png) -10 30, auto; */
 }
 
 body {
@@ -60,6 +60,12 @@ form {
     border-radius: 4px;
     padding: 30px;
     color: rgb(70,70,70);
+}
+form .row  {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
 }
 
 input {

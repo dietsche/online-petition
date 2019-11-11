@@ -47,16 +47,16 @@ app.get("/", (req, res) => {
 app.post("/", (req, res) => {
     console.log("request: ", req.body);
     db.addSignature(
-        req.body["first_name"],
-        req.body["last_name"],
-        req.body["signature"]
+        req.body["signature"],
+        req.session.userId
         // modifiy!!! alter your route, so that you pass userId from the cooke to qour query instad of first and last;
     )
         .then(result => {
             console.log("success");
-            console.log("current id: ", result.rows[0].id);
-            req.session.id = result.rows[0].id;
-            res.redirect("/thank-you");
+            console.log("result: ", result);
+
+            console.log("current id: ", result.rows[0]["user_id"]);
+            // res.redirect("/thank-you");
         })
         .catch(err => {
             res.render("petition", {
@@ -70,25 +70,11 @@ app.post("/", (req, res) => {
             console.log(err);
         });
 });
-//>> INSERT for sugnatrures table need to be changes to include the user_id
 
 app.get("/thank-you", (req, res) => {
     console.log("*************** /thanks ******************");
     console.log("req.session: ", req.session);
     console.log("**************** /thanks *****************");
-
-    // db.countSignatures()
-    //     .then(result => {
-    //         res.render("thankyou", {
-    //             layout: "main",
-    //             numSignatures: result.rows[0].count
-    //         });
-    //
-    //         console.log("result: ", result.rows[0].count);
-    //     })
-    //     .catch(err => {
-    //         console.log(err);
-    //     });
 
     db.getSignatureImage(req.session.id)
         .then(result => {
@@ -126,45 +112,93 @@ app.get("/signers", (req, res) => {
         });
 });
 
-// app.get("register", (req, res) => {
-//render registration page     })
-// });
+app.get("/registration", (req, res) => {
+    res.render("registration", {
+        layout: "main"
+    });
+});
 
-// app.post("register", (req, res) => {
-//      console.log(req.body); >> grab the user input!!! })
-//      hash the user password
-//      insert a row in USERS table
-//      if insert is successful, add 'userId' in a cookie (value should be the id created by postgres when row was inserted)
-//      if insert fails rerender template with err message
+app.post("/registration", (req, res) => {
+    hash(req.body["password"])
+        .then(result => {
+            let hashedPassword = result;
+            console.log("hashedPassword: ", hashedPassword);
 
-// });
+            db.addUserData(
+                req.body["first_name"],
+                req.body["last_name"],
+                req.body["email"],
+                hashedPassword
+            ).then(result => {
+                console.log("result.id ", result.rows[0].id);
+                req.session.userId = result.rows[0].id;
+                // (then?)redirect("...");
+            });
+        })
+
+        .catch(err => {
+            // if insert fails rerender template with err message
+
+            res.render("registration", {
+                layout: "main",
+                helpers: {
+                    showError() {
+                        return "Something went wrong! Please try again and fill out all fields.";
+                    }
+                }
+            });
+            console.log(err);
+        });
+});
 
 // >> INSERT query in users table
 
-// app.get("login", (req, res) => {
-//render login page     })
-// });
+app.get("/login", (req, res) => {
+    res.render("login", {
+        layout: "main"
+    });
+});
 
-// app.post("login", (req, res) => {
-// get the users stored hashed pw from db, usind the users email adress
-// pass the hashed pw to compare along with the pw the user typed in input field
-// if they match > compare returns true; if not: false (>rerender with err message);
-// if true: add user id to cookie (req.session.userId =...)
-// do a db query to find out if user signed > put their sigID in a cookie & redirect to "thanks"; if not: redirect to "petition"
+app.post("/login", (req, res) => {
+    let email = req.body["email"];
+    console.log("email: ", req.body["email"]);
+    db.getHashedPassword(email)
+        .then(result => {
+            let savedPassword = result.rows[0].password;
+            console.log("id: ", result.rows[0].id);
+            let userId = result.rows[0].id;
+            console.log("savedPassword: ", savedPassword);
+            compare(req.body["password"], savedPassword).then(result => {
+                console.log(result);
+                if (result == true) {
+                    req.session.userId = userId;
+                    console.log("true");
 
-//     })
-// });
+                    // do a db query to find out if user signed > put their sigID in a cookie & redirect to "thanks"; if not: redirect to "petition"
+                    res.redirect("/");
+                } else if (result == false) {
+                    //render err message ("incorrect password")
+                }
+            });
+        })
+
+        .catch(err => {
+            // if insert fails rerender template with err message
+
+            res.render("registration", {
+                layout: "main",
+                helpers: {
+                    showError() {
+                        return "Something went wrong! Please try again and fill out all fields.";
+                    }
+                }
+            });
+            console.log(err);
+        });
+});
 
 // >> SEECT  to get user infor ba amail address
 // >> SELECT from signatures to find out if they-ve signed
-
-//in POST REQUEST!!!!!!:
-// app.get("register", (req, res) => {
-//     hash("hello").then(hashedPassword => {
-//         console.log("hashedPassword: ", hashedPassword));
-//         then.redirect("...");
-//     })
-// });
 
 app.listen(8080, () => console.log("server running"));
 

@@ -1,0 +1,20 @@
+<form method="post">
+    <div class="row">
+        <p>Email</p>
+        <input type="email" name="email" value="">
+    </div>
+    <div class="row">
+        <p>Password</p>
+        <input type="password" name="password" value="">
+    </div>
+
+    <input type="hidden" name="_csrf" value="{{csrfToken}}">
+
+    <p id="error-message">
+        {{showError}}
+
+    </p>
+
+    <button type="submit" name="submit">LOG IN</button>
+
+<form>
