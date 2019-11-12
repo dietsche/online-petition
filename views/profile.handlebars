@@ -1,7 +1,8 @@
 
+    <div class="head-layer">
 
-<div id="container-login">
 
+<div id="container-registration">
     <div class="registration-headline">
         <!-- <p>Cursors to Carrots!</p> -->
         <div class="circle">
@@ -11,14 +12,17 @@
     </div>
 
     <form method="post">
-
         <div class="row">
-            <p>Email</p>
-            <input type="email" name="email" value="">
+            <p>Age</p>
+            <input type="number" name="age" value="">
         </div>
         <div class="row">
-            <p>Password</p>
-            <input type="password" name="password" value="">
+            <p>City</p>
+            <input type="text" name="city" value="">
+        </div>
+        <div class="row">
+            <p>Homepage</p>
+            <input type="text" name="url" value="">
         </div>
 
         <input type="hidden" name="_csrf" value="{{csrfToken}}">
@@ -28,8 +32,9 @@
 
         </p>
 
-        <button type="submit" name="submit">LOG IN</button>
+        <button type="submit" name="submit">SAVE</button>
 
     <form>
+</div>
 
 </div>

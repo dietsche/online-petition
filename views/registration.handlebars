@@ -1,31 +1,44 @@
-<form method="post">
-    <div class="row">
-        <p>First Name</p>
-        <input type="text" name="first_name" value="">
-    </div>
-    <div class="row">
-        <p>Last Name</p>
-        <input type="text" name="last_name" value="">
-    </div>
-    <div class="row">
-        <p>Email</p>
-        <input type="email" name="email" value="">
-    </div>
-    <div class="row">
-        <p>Password</p>
-        <input type="password" name="password" value="">
+
+
+<div id="container-registration">
+    <div class="registration-headline">
+        <!-- <p>Cursors to Carrots!</p> -->
+        <p>Headline.......</p>
+        <div class="circle">
+            <!-- <img src="img/carrot_cursor.png" class="carrot" alt=""> -->
+
+        </div>
     </div>
 
+    <form method="post">
+        <div class="row">
+            <p>First Name</p>
+            <input type="text" name="first_name" value="">
+        </div>
+        <div class="row">
+            <p>Last Name</p>
+            <input type="text" name="last_name" value="">
+        </div>
+        <div class="row">
+            <p>Email</p>
+            <input type="email" name="email" value="">
+        </div>
+        <div class="row">
+            <p>Password</p>
+            <input type="password" name="password" value="">
+        </div>
 
-    <input type="hidden" name="_csrf" value="{{csrfToken}}">
+
+        <input type="hidden" name="_csrf" value="{{csrfToken}}">
 
 
-    <p id="error-message">
-        {{showError}}
+        <p id="error-message">
+            {{showError}}
 
-    </p>
+        </p>
 
-    <button type="submit" name="submit">SIGN UP</button>
+        <button type="submit" name="submit">SIGN UP</button>
 
-    <p>If you are already registered to this petition, please <a href="#">log in</a>.</p>
-<form>
+        <p id="log-in-info">If you have already registereds, please <a href="#">log in</a>.</p>
+    <form>
+</div>

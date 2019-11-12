@@ -5,7 +5,11 @@
         <div id="list-of-signers">
             <ul>
                 {{#arrSigners}}
-                <li>{{first}} {{last}}</li>
+                    {{#if url}}
+                        <li><a href='{{url}}'> {{first}} {{last}} </a> {{#if city}} - <a href='/signers/{{city}}'> {{city}} </a> {{/if}}</li>
+                    {{else}}
+                        <li>{{first}} {{last}}  {{#if city}} - <a href='/signers/{{city}}'> {{city}} </a> {{/if}}</li>
+                    {{/if}}
 
                 {{/arrSigners}}
             </ul>

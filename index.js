@@ -44,6 +44,46 @@ app.get("/", (req, res) => {
     });
 });
 
+app.get("/profile", (req, res) => {
+    res.render("profile", {
+        layout: "main"
+    });
+});
+
+app.post("/profile", (req, res) => {
+    let userUrl = req.body["url"];
+    if (
+        !req.body["url"].startsWith("https://") ||
+        !req.body["url"].startsWith("http://")
+    ) {
+        userUrl = "http://" + req.body["url"];
+    }
+    console.log("userUrl: ", userUrl);
+    db.addUserProfile(
+        req.body["age"],
+        req.body["city"],
+        userUrl,
+        req.session.userId
+    )
+        .then(() => {
+            res.redirect("/");
+        })
+
+        .catch(err => {
+            // if insert fails rerender template with err message
+
+            res.render("profile", {
+                layout: "main",
+                helpers: {
+                    showError() {
+                        return "Something went wrong! Please try again and fill out all fields.";
+                    }
+                }
+            });
+            console.log(err);
+        });
+});
+
 app.post("/", (req, res) => {
     console.log("request: ", req.body);
     db.addSignature(
@@ -56,7 +96,7 @@ app.post("/", (req, res) => {
             console.log("result: ", result);
 
             console.log("current id: ", result.rows[0]["user_id"]);
-            // res.redirect("/thank-you");
+            res.redirect("/thank-you");
         })
         .catch(err => {
             res.render("petition", {
@@ -76,7 +116,7 @@ app.get("/thank-you", (req, res) => {
     console.log("req.session: ", req.session);
     console.log("**************** /thanks *****************");
 
-    db.getSignatureImage(req.session.id)
+    db.getSignatureImage(req.session.userId)
         .then(result => {
             signatureURL = result.rows[0].signature;
             console.log("SIGN HIER??? ", result.rows[0].signature); //warum ist result nicht direkt signature???
@@ -98,7 +138,7 @@ app.get("/thank-you", (req, res) => {
 });
 
 app.get("/signers", (req, res) => {
-    db.getSignatures()
+    db.getUserData()
         .then(result => {
             console.log("result signers", result.rows);
             let arrSigners = result.rows;
@@ -111,6 +151,29 @@ app.get("/signers", (req, res) => {
             console.log(err);
         });
 });
+
+app.get("/signers/:city", (req, res) => {
+    const { city } = req.params;
+    console.log("req.params.city: ", req.params.city);
+    db.getUserDataByCity(city)
+        .then(result => {
+            let arrSigners = result.rows;
+            res.render("signers", {
+                layout: "main",
+                arrSigners
+            });
+        })
+        .catch(err => {
+            console.log(err);
+        });
+});
+// const { city } = req.params;
+// const selectedProject = projects.find(
+//     item => item.directory.slice(1) == projectName
+// );
+// if (!selectedProject) {
+//     return res.sendStatus(404);
+// }
 
 app.get("/registration", (req, res) => {
     res.render("registration", {
@@ -132,7 +195,7 @@ app.post("/registration", (req, res) => {
             ).then(result => {
                 console.log("result.id ", result.rows[0].id);
                 req.session.userId = result.rows[0].id;
-                // (then?)redirect("...");
+                res.redirect("/profile");
             });
         })
 
@@ -165,17 +228,26 @@ app.post("/login", (req, res) => {
     db.getHashedPassword(email)
         .then(result => {
             let savedPassword = result.rows[0].password;
-            console.log("id: ", result.rows[0].id);
+            // console.log("id: ", result.rows[0].id);
             let userId = result.rows[0].id;
-            console.log("savedPassword: ", savedPassword);
+            // console.log("savedPassword: ", savedPassword);
             compare(req.body["password"], savedPassword).then(result => {
-                console.log(result);
+                // console.log(result);
                 if (result == true) {
                     req.session.userId = userId;
                     console.log("true");
+                    db.checkIfSigned(req.session.userId).then(result => {
+                        console.log("checkIfSigned result: ", result);
+                        if (result.rows[0] && result.rows[0]["user_id"]) {
+                            console.log("redirect thanks");
+                            res.redirect("/thank-you");
+                        } else if (!result.rows[0]) {
+                            res.redirect("/");
+                            console.log("redirect petition");
+                        }
+                    });
 
                     // do a db query to find out if user signed > put their sigID in a cookie & redirect to "thanks"; if not: redirect to "petition"
-                    res.redirect("/");
                 } else if (result == false) {
                     //render err message ("incorrect password")
                 }
@@ -205,3 +277,5 @@ app.listen(8080, () => console.log("server running"));
 // post req.body enthält input fields first_name und last_name; drittes (verstecktes) input-field wird für Signature angelegt
 
 //see signature again
+
+//dynamic routes with params!

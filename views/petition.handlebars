@@ -1,26 +1,33 @@
+
+
 <div id="container-petition">
+    <div class="registration-headline">
+        <div class="circle">
+            <img src="img/carrot_cursor.png" class="carrot" alt="">
 
-
-    <div class="headline">
-        <img src="img/carrot_large.png" class="carrot" alt="">
-        <h2>Petition for a carrot-cursor</h2>
-    </div>
-
-    <div class="description">
-        <div class="">
-            <p>Support our petition for changing the default cursor to a carrot!</p>
         </div>
     </div>
 
+    <div id="please-sign">
 
-    <form method="post">
+    </div>
+
+    <!-- <div class="description">
+        <div class="">
+            <p>Please sign our petition for changing the default cursor to a carrot.</p>
+        </div>
+    </div> -->
+
+
+    <form method="post" id="form-signature">
 
         <input type="hidden" name="signature" value="" id="signature">
         <input type="hidden" name="_csrf" value="{{csrfToken}}">
 
         <label for="">
-            <canvas id="canvas" width="320" height="100"></canvas>
-            Please sign here
+                <div id="canvas-layer">
+                    <canvas id="canvas" width="440" height="150"></canvas>
+                </div>
         </label>
 
         <p id="error-message">
