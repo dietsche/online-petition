@@ -1,9 +1,23 @@
-$("h1").css({
-    color: "red"
+$("#linkCredits").on("click", function() {
+    console.log("CLICK!");
+});
+//Modal:
+// var darkness = document.getElementById("darkness");
+var exitModal = $("#exit-modal");
+var modalContainer = $(".modal-container");
+
+$("body").on("click", function() {
+    console.log("click");
+    modalContainer.show().css("display", "flex");
 });
 
-$("#canvas").on("click", function() {
-    console.log("CLICK!");
+$("#linkCredits").on("click", function() {
+    console.log("click");
+    modalContainer.show().css("display", "flex");
+});
+
+exitModal.on("click", function() {
+    modalContainer.remove();
 });
 
 var canvas = document.getElementById("canvas");

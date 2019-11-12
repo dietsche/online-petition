@@ -51,20 +51,21 @@ app.get("/profile", (req, res) => {
 });
 
 app.post("/profile", (req, res) => {
-    let userUrl = req.body["url"];
+    let city = req.body["city"];
+    let age = null;
+    if (req.body["age"]) {
+        age = req.body["age"];
+    }
+    let userUrl = "";
     if (
-        !req.body["url"].startsWith("https://") ||
-        !req.body["url"].startsWith("http://")
+        req.body["url"] &&
+        (!req.body["url"].startsWith("https://") ||
+            !req.body["url"].startsWith("http://"))
     ) {
         userUrl = "http://" + req.body["url"];
     }
-    console.log("userUrl: ", userUrl);
-    db.addUserProfile(
-        req.body["age"],
-        req.body["city"],
-        userUrl,
-        req.session.userId
-    )
+
+    db.addUserProfile(age, city, userUrl, req.session.userId)
         .then(() => {
             res.redirect("/");
         })
@@ -154,13 +155,15 @@ app.get("/signers", (req, res) => {
 
 app.get("/signers/:city", (req, res) => {
     const { city } = req.params;
+    let citySelection = city;
     console.log("req.params.city: ", req.params.city);
     db.getUserDataByCity(city)
         .then(result => {
             let arrSigners = result.rows;
             res.render("signers", {
                 layout: "main",
-                arrSigners
+                arrSigners,
+                citySelection
             });
         })
         .catch(err => {

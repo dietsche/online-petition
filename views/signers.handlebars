@@ -1,7 +1,9 @@
-<div id="container-signers">
 
     <div id="container-list">
-        <p>Signers of the Petition</p>
+        <div>
+            <p>Signers of the Petition  {{#if citySelection}} from {{citySelection}} (<a href='../signers'>see all</a>) {{/if}}</p>
+        </div>
+
         <div id="list-of-signers">
             <ul>
                 {{#arrSigners}}
@@ -16,5 +18,3 @@
         </div>
 
     </div>
-
-</div>
