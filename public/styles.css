@@ -74,7 +74,9 @@ body {
 #registration-headline p {
     color: rgb(240,240,240);
     text-shadow: 3px 3px 5px rgb(240,80,5);
-    font-size: 65px;
+    /* font-size: 65px; */
+    font-size: 3px;
+
     letter-spacing: 3px;
     font-weight: bolder;
 }
@@ -218,11 +220,11 @@ button {
 #signature-image {
     grid-area: 2 / 2 / 3 / 3;
     justify-self: center;
-     width: 220px;
-     height: 300px;
-     background-image: url(img/paper.png);
-     text-align: center;
-     padding: 20px;
+    width: 220px;
+    height: 300px;
+    background-image: url(img/paper.png);
+    text-align: center;
+    padding: 20px;
 }
 
 #signature-image div {
@@ -263,17 +265,41 @@ button {
 
 
 
-#link-to-signers {
+#link-box {
     grid-area: 2 / 2 / 2 / 3;
     align-self: end;
     justify-self: center;
+    height: 100px;
     margin-bottom: 40px;
 }
-
-#link-to-signers a {
+#link-box div {
+    height: 28px;
+    color: white;
+    text-align: center;
+}
+#link-box a {
     font-size: 22px;
     color: white;
 }
+#link-box form {
+    height: 28px;
+    padding: 0;
+    margin: 0;
+    opacity: 1;
+    background: rgba(0,0,0,0);
+
+}
+#link-box button {
+    height: 28px;
+    border: none;
+    margin: 0;
+    width: 100%;
+    font-size: 22px;
+    text-decoration: underline;
+    background: rgba(0,0,0,0);
+    cursor: pointer;
+}
+
 /* SIGNERS */
 
 #container-list {

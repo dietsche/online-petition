@@ -6,7 +6,6 @@ var db = spicedPg(
 
 exports.getSignatures = function() {
     return db.query("SELECT first, last FROM signatures"); //returns promise!
-    //change to SINGLE QUOTES!!!
 };
 //add security option!!
 
@@ -40,6 +39,9 @@ exports.updateProfileData = function(age, city, url, user_id) {
     );
 };
 
+exports.deleteSignature = function(user_id) {
+    return db.query(`DELETE FROM signatures WHERE user_id = $1`, [user_id]);
+};
 //>> gehr nur mit UNIQUE-Werten
 
 exports.getUserData = function() {

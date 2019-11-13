@@ -34,190 +34,13 @@ app.use(function(req, res, next) {
     next();
 });
 
-app.get("/signature", (req, res) => {
-    console.log("*************** /route ******************");
-    console.log("req.session: ", req.session);
-    console.log("req.session: ", req.session);
-    console.log("**************** /route *****************");
-    res.render("petition", {
-        layout: "main"
-    });
-});
-
-app.get("/profile", (req, res) => {
-    res.render("profile", {
-        layout: "main"
-    });
-});
-
-app.post("/profile", (req, res) => {
-    let city = req.body["city"];
-    let age = null;
-    if (req.body["age"]) {
-        age = req.body["age"];
+app.get("/", (req, res) => {
+    if (req.session.userId) {
+        res.redirect("/login");
+    } else {
+        res.redirect("/registration");
     }
-    let userUrl = "";
-    if (
-        req.body["url"] &&
-        (!req.body["url"].startsWith("https://") ||
-            !req.body["url"].startsWith("http://"))
-    ) {
-        userUrl = "http://" + req.body["url"];
-    }
-
-    db.addUserProfile(age, city, userUrl, req.session.userId)
-        .then(() => {
-            res.redirect("/signature");
-        })
-
-        .catch(err => {
-            // if insert fails rerender template with err message
-
-            res.render("profile", {
-                layout: "main",
-                helpers: {
-                    showError() {
-                        return "Something went wrong! Please try again and fill out all fields.";
-                    }
-                }
-            });
-            console.log(err);
-        });
 });
-
-app.post("/signature", (req, res) => {
-    console.log("request: ", req.body);
-    db.addSignature(
-        req.body["signature"],
-        req.session.userId
-        // modifiy!!! alter your route, so that you pass userId from the cooke to qour query instad of first and last;
-    )
-        .then(result => {
-            console.log("success");
-            console.log("result: ", result);
-
-            console.log("current id: ", result.rows[0]["user_id"]);
-            res.redirect("/thank-you");
-        })
-        .catch(err => {
-            res.render("petition", {
-                layout: "main",
-                helpers: {
-                    showError() {
-                        return "Something went wrong! Please try again and fill out all fields.";
-                    }
-                }
-            });
-            console.log(err);
-        });
-});
-
-app.get("/thank-you", (req, res) => {
-    console.log("*************** /thanks ******************");
-    console.log("req.session: ", req.session);
-    console.log("**************** /thanks *****************");
-
-    db.getSignatureImage(req.session.userId)
-        .then(result => {
-            signatureURL = result.rows[0].signature;
-            console.log("SIGN HIER??? ", result.rows[0].signature); //warum ist result nicht direkt signature???
-        })
-        .then(() => {
-            db.countSignatures().then(result => {
-                res.render("thank-you", {
-                    layout: "main",
-                    signatureURL,
-                    numSignatures: result.rows[0].count
-                });
-
-                console.log("result: ", result.rows[0].count);
-            });
-        })
-        .catch(err => {
-            console.log(err);
-        });
-});
-
-app.get("/signers", (req, res) => {
-    db.getUserData()
-        .then(result => {
-            console.log("result signers", result.rows);
-            let arrSigners = result.rows;
-            res.render("signers", {
-                layout: "main",
-                arrSigners
-            });
-        })
-        .catch(err => {
-            console.log(err);
-        });
-});
-
-app.get("/signers/:city", (req, res) => {
-    const { city } = req.params;
-    let citySelection = city;
-    console.log("req.params.city: ", req.params.city);
-    db.getUserDataByCity(city)
-        .then(result => {
-            let arrSigners = result.rows;
-            res.render("signers", {
-                layout: "main",
-                arrSigners,
-                citySelection
-            });
-        })
-        .catch(err => {
-            console.log(err);
-        });
-});
-// const { city } = req.params;
-// const selectedProject = projects.find(
-//     item => item.directory.slice(1) == projectName
-// );
-// if (!selectedProject) {
-//     return res.sendStatus(404);
-// }
-
-app.get("/registration", (req, res) => {
-    res.render("registration", {
-        layout: "main"
-    });
-});
-
-app.post("/registration", (req, res) => {
-    hash(req.body["password"])
-        .then(result => {
-            let hashedPassword = result;
-            console.log("hashedPassword: ", hashedPassword);
-
-            db.addUserData(
-                req.body["first_name"],
-                req.body["last_name"],
-                req.body["email"],
-                hashedPassword
-            ).then(result => {
-                console.log("result.id ", result.rows[0].id);
-                req.session.userId = result.rows[0].id;
-                res.redirect("/profile");
-            });
-        })
-
-        .catch(err => {
-            // if insert fails rerender template with err message
-
-            res.render("registration", {
-                layout: "main",
-                helpers: {
-                    showError() {
-                        return "Something went wrong! Please try again and fill out all fields.";
-                    }
-                }
-            });
-            console.log(err);
-        });
-});
-
-// >> INSERT query in users table
 
 app.get("/login", (req, res) => {
     res.render("login", {
@@ -262,6 +85,86 @@ app.post("/login", (req, res) => {
             // if insert fails rerender template with err message
 
             res.render("login", {
+                layout: "main",
+                helpers: {
+                    showError() {
+                        return "Something went wrong! Please try again and fill out all fields.";
+                    }
+                }
+            });
+            console.log(err);
+        });
+});
+
+app.get("/registration", (req, res) => {
+    res.render("registration", {
+        layout: "main"
+    });
+});
+
+app.post("/registration", (req, res) => {
+    hash(req.body["password"])
+        .then(result => {
+            let hashedPassword = result;
+            console.log("hashedPassword: ", hashedPassword);
+
+            db.addUserData(
+                req.body["first_name"],
+                req.body["last_name"],
+                req.body["email"],
+                hashedPassword
+            ).then(result => {
+                console.log("result.id ", result.rows[0].id);
+                req.session.userId = result.rows[0].id;
+                res.redirect("/profile");
+            });
+        })
+
+        .catch(err => {
+            // if insert fails rerender template with err message
+
+            res.render("registration", {
+                layout: "main",
+                helpers: {
+                    showError() {
+                        return "Something went wrong! Please try again and fill out all fields.";
+                    }
+                }
+            });
+            console.log(err);
+        });
+});
+
+app.get("/profile", (req, res) => {
+    res.render("profile", {
+        layout: "main"
+    });
+});
+
+app.post("/profile", (req, res) => {
+    let city = req.body["city"];
+    let age = null;
+    if (req.body["age"]) {
+        age = req.body["age"];
+    }
+    let userUrl = "";
+    if (
+        req.body["url"] &&
+        (!req.body["url"].startsWith("https://") ||
+            !req.body["url"].startsWith("http://"))
+    ) {
+        userUrl = "http://" + req.body["url"];
+    }
+
+    db.addUserProfile(age, city, userUrl, req.session.userId)
+        .then(() => {
+            res.redirect("/signature");
+        })
+
+        .catch(err => {
+            // if insert fails rerender template with err message
+
+            res.render("profile", {
                 layout: "main",
                 helpers: {
                     showError() {
@@ -327,6 +230,122 @@ app.post("/edit", (req, res) => {
         }
     });
 });
+
+app.get("/signature", (req, res) => {
+    console.log("*************** /route ******************");
+    console.log("req.session: ", req.session);
+    console.log("req.session: ", req.session);
+    console.log("**************** /route *****************");
+    res.render("petition", {
+        layout: "main"
+    });
+});
+
+app.post("/signature", (req, res) => {
+    console.log("request: ", req.body);
+    db.addSignature(
+        req.body["signature"],
+        req.session.userId
+        // modifiy!!! alter your route, so that you pass userId from the cooke to qour query instad of first and last;
+    )
+        .then(result => {
+            console.log("success");
+            console.log("result: ", result);
+
+            console.log("current id: ", result.rows[0]["user_id"]);
+            res.redirect("/thank-you");
+        })
+        .catch(err => {
+            res.render("petition", {
+                layout: "main",
+                helpers: {
+                    showError() {
+                        return "Something went wrong! Please try again and fill out all fields.";
+                    }
+                }
+            });
+            console.log(err);
+        });
+});
+
+app.get("/thank-you", (req, res) => {
+    console.log("*************** /thanks ******************");
+    console.log("req.session: ", req.session);
+    console.log("**************** /thanks *****************");
+
+    db.getSignatureImage(req.session.userId)
+        .then(result => {
+            signatureURL = result.rows[0].signature;
+            console.log("SIGN HIER??? ", result.rows[0].signature); //warum ist result nicht direkt signature???
+        })
+        .then(() => {
+            db.countSignatures().then(result => {
+                res.render("thank-you", {
+                    layout: "main",
+                    signatureURL,
+                    numSignatures: result.rows[0].count
+                });
+
+                console.log("result: ", result.rows[0].count);
+            });
+        })
+        .catch(err => {
+            console.log(err);
+        });
+});
+
+app.post("/thank-you", (req, res) => {
+    db.deleteSignature(req.session.userId)
+        .then(result => {
+            console.log(result);
+            // res.redirect("/signature");
+        })
+        .catch(err => {
+            console.log(err);
+        });
+});
+
+//     delete the users signatureId cookie > req.session.signatureId = null
+
+app.get("/signers", (req, res) => {
+    db.getUserData()
+        .then(result => {
+            console.log("result signers", result.rows);
+            let arrSigners = result.rows;
+            res.render("signers", {
+                layout: "main",
+                arrSigners
+            });
+        })
+        .catch(err => {
+            console.log(err);
+        });
+});
+
+app.get("/signers/:city", (req, res) => {
+    const { city } = req.params;
+    let citySelection = city;
+    console.log("req.params.city: ", req.params.city);
+    db.getUserDataByCity(city)
+        .then(result => {
+            let arrSigners = result.rows;
+            res.render("signers", {
+                layout: "main",
+                arrSigners,
+                citySelection
+            });
+        })
+        .catch(err => {
+            console.log(err);
+        });
+});
+// const { city } = req.params;
+// const selectedProject = projects.find(
+//     item => item.directory.slice(1) == projectName
+// );
+// if (!selectedProject) {
+//     return res.sendStatus(404);
+// }
 
 // >> SEECT  to get user infor ba amail address
 // >> SELECT from signatures to find out if they-ve signed

@@ -6,7 +6,7 @@ $("#linkCredits").on("click", function() {
 var exitModal = $("#exit-modal");
 var modalContainer = $(".modal-container");
 
-$("body").on("click", function() {
+$("#linkCredits").on("click", function() {
     console.log("click");
     modalContainer.show().css("display", "flex");
 });

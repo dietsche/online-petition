@@ -12,4 +12,14 @@
 
             </div>
         </div>
-        <p id="link-to-signers"><a href="/signers">See all {{numSignatures}} supporters of the petition.</a></p>
+        <div id="link-box">
+            <div id="link-to-signers"><a href="/signers">See all {{numSignatures}} supporters of the petition</a></div>
+            <div id="link-to-edit"><a href="/edit">Edit your profile</a></div>
+            <div id="delete-signature">
+                <form action="/thank-you" method="post">
+                    <button type="submit" name="submit">Delete your signature</button>
+                    <input type="hidden" name="_csrf" value="{{csrfToken}}">
+
+                </form>
+            </div>
+        </div>
