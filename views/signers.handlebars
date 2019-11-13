@@ -1,11 +1,12 @@
 
     <div id="container-list">
         <div>
-            <p>Signers of the Petition  {{#if citySelection}} from {{citySelection}} (<a href='../signers'>see all</a>) {{/if}}</p>
+            <h2>{{numSignatures}} Signers of the Petition</h2>
+             {{#if citySelection}} <h3> from {{citySelection}} (<a href='../signers'>see all</a>) </h3> {{/if}}
         </div>
 
         <div id="list-of-signers">
-            <ul>
+            <ol>
                 {{#arrSigners}}
                     {{#if url}}
                         <li><a href='{{url}}'> {{first}} {{last}} </a> {{#if city}} - <a href='/signers/{{city}}'> {{city}} </a> {{/if}}</li>
@@ -14,7 +15,7 @@
                     {{/if}}
 
                 {{/arrSigners}}
-            </ul>
+            </ol>
         </div>
 
     </div>

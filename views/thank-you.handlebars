@@ -1,25 +1,21 @@
 
 
-        <div id="thank-you">
-            <p>Thank you for signing the petition!</p>
-        </div>
-
-        <div id="signature-image">
-            <div>
-                <img src="img/carrot.png" class="carrot" alt="">
-                <p> Petition </p>
-                <img src="{{signatureURL}}" class="signature">
-
-            </div>
-        </div>
-        <div id="link-box">
-            <div id="link-to-signers"><a href="/signers">See all {{numSignatures}} supporters of the petition</a></div>
-            <div id="link-to-edit"><a href="/edit">Edit your profile</a></div>
+        <div id="thank-you" >
+            <h1>Thank you for signing!</h1>
+            <div> <a href="/signers">See all {{numSignatures}} supporters of the petition</a></div>
             <div id="delete-signature">
                 <form action="/thank-you" method="post">
                     <button type="submit" name="submit">Delete your signature</button>
                     <input type="hidden" name="_csrf" value="{{csrfToken}}">
-
                 </form>
             </div>
         </div>
+
+        <div id="signature-image">
+            <div>
+                <img src="img/carrot_badge.png" class="carrot" alt="">
+                <p> Petition </p>
+                <img src="{{signatureURL}}" class="signature">
+            </div>
+        </div>
+        <!-- <p>You qualified to use the carrot cursor!<p> -->

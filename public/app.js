@@ -1,23 +1,12 @@
-$("#linkCredits").on("click", function() {
-    console.log("CLICK!");
-});
-//Modal:
-// var darkness = document.getElementById("darkness");
 var exitModal = $("#exit-modal");
 var modalContainer = $(".modal-container");
 
 $("#linkCredits").on("click", function() {
-    console.log("click");
-    modalContainer.show().css("display", "flex");
-});
-
-$("#linkCredits").on("click", function() {
-    console.log("click");
     modalContainer.show().css("display", "flex");
 });
 
 exitModal.on("click", function() {
-    modalContainer.remove();
+    modalContainer.show().css("display", "none");
 });
 
 var canvas = document.getElementById("canvas");

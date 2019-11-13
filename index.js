@@ -7,6 +7,8 @@ const { hash, compare } = require("./utils/bc");
 const app = express();
 
 let signatureURL;
+let arrUserData;
+let signed = false;
 
 app.engine("handlebars", hb());
 app.set("view engine", "handlebars");
@@ -44,7 +46,8 @@ app.get("/", (req, res) => {
 
 app.get("/login", (req, res) => {
     res.render("login", {
-        layout: "main"
+        layout: "main",
+        signed
     });
 });
 
@@ -67,16 +70,23 @@ app.post("/login", (req, res) => {
                         console.log("checkIfSigned result: ", result);
                         if (result.rows[0] && result.rows[0]["user_id"]) {
                             console.log("redirect thanks");
+                            req.session.signed = req.session.userId;
+                            signed = true;
                             res.redirect("/thank-you");
                         } else if (!result.rows[0]) {
                             res.redirect("/signature");
                             console.log("redirect petition");
                         }
                     });
-
-                    // do a db query to find out if user signed > put their sigID in a cookie & redirect to "thanks"; if not: redirect to "petition"
                 } else if (result == false) {
-                    //render err message ("incorrect password")
+                    res.render("login", {
+                        layout: "main",
+                        helpers: {
+                            showError() {
+                                return "invalid password - please try again";
+                            }
+                        }
+                    });
                 }
             });
         })
@@ -103,41 +113,41 @@ app.get("/registration", (req, res) => {
 });
 
 app.post("/registration", (req, res) => {
-    hash(req.body["password"])
-        .then(result => {
-            let hashedPassword = result;
-            console.log("hashedPassword: ", hashedPassword);
+    hash(req.body["password"]).then(result => {
+        let hashedPassword = result;
+        console.log("hashedPassword: ", hashedPassword);
 
-            db.addUserData(
-                req.body["first_name"],
-                req.body["last_name"],
-                req.body["email"],
-                hashedPassword
-            ).then(result => {
+        db.addUserData(
+            req.body["first_name"],
+            req.body["last_name"],
+            req.body["email"],
+            hashedPassword
+        )
+            .then(result => {
                 console.log("result.id ", result.rows[0].id);
                 req.session.userId = result.rows[0].id;
                 res.redirect("/profile");
-            });
-        })
+            })
+            .catch(err => {
+                // if insert fails rerender template with err message
 
-        .catch(err => {
-            // if insert fails rerender template with err message
-
-            res.render("registration", {
-                layout: "main",
-                helpers: {
-                    showError() {
-                        return "Something went wrong! Please try again and fill out all fields.";
+                res.render("registration", {
+                    layout: "main",
+                    helpers: {
+                        showError() {
+                            return "Something went wrong! Please try again and fill out all fields.";
+                        }
                     }
-                }
+                });
+                console.log(err);
             });
-            console.log(err);
-        });
+    });
 });
 
 app.get("/profile", (req, res) => {
     res.render("profile", {
-        layout: "main"
+        layout: "main",
+        signed
     });
 });
 
@@ -179,9 +189,10 @@ app.post("/profile", (req, res) => {
 app.get("/edit", (req, res) => {
     db.getUserAndProfileData(req.session.userId)
         .then(result => {
-            let arrUserData = result.rows;
+            arrUserData = result.rows;
             res.render("edit", {
                 layout: "main",
+                signed,
                 arrUserData
             });
         })
@@ -192,43 +203,81 @@ app.get("/edit", (req, res) => {
 });
 
 app.post("/edit", (req, res) => {
-    db.updateProfileData(
-        req.body["age"],
-        req.body["city"],
-        req.body["url"],
-        req.session.userId
-    ).then(() => {
-        db.updateUserData(
-            req.session.userId,
-            req.body["first_name"],
-            req.body["last_name"],
-            req.body["email"]
-        )
+    if (req.body["password"] !== "") {
+        hash(req.body["password"])
+            .then(result => {
+                let hashedPassword = result;
+                return Promise.all([
+                    db.updateProfileData(
+                        req.body["age"],
+                        req.body["city"],
+                        req.body["url"],
+                        req.session.userId
+                    ),
+                    db.updateUserData(
+                        req.session.userId,
+                        req.body["first_name"],
+                        req.body["last_name"],
+                        req.body["email"]
+                    ),
+                    db.updatePassword(req.session.userId, hashedPassword)
+                ]);
+            })
             .then(() => {
-                res.render("edit", {
-                    layout: "main"
-                });
+                if (req.session.signed === req.session.userId) {
+                    res.redirect("/thank-you");
+                } else {
+                    res.redirect("/signature");
+                }
             })
             .catch(err => {
-                //add Err message in case fields are empty
+                res.render("edit", {
+                    layout: "main",
+                    arrUserData,
+                    helpers: {
+                        showError() {
+                            return "Something went wrong! Please try again and fill out all fields.";
+                        }
+                    }
+                });
                 console.log(err);
             });
-
-        if (req.body["password"] !== "") {
-            hash(req.body["password"]).then(result => {
-                let hashedPassword = result;
-                console.log("hashedPassword: ", hashedPassword);
-                db.updatePassword(req.session.userId, hashedPassword)
-                    .then(result => {
-                        console.log(result);
-                    })
-                    .catch(err => {
-                        //add Err message in case fields are empty
-                        console.log(err);
-                    });
+    } else {
+        return Promise.all([
+            db.updateProfileData(
+                req.body["age"],
+                req.body["city"],
+                req.body["url"],
+                req.session.userId
+            ),
+            db.updateUserData(
+                req.session.userId,
+                req.body["first_name"],
+                req.body["last_name"],
+                req.body["email"]
+            )
+        ])
+            .then(result => {
+                console.log("result:!!! ", result);
+                if (req.session.signed === req.session.userId) {
+                    res.redirect("/thank-you");
+                } else {
+                    res.redirect("/signature");
+                }
+            })
+            .catch(err => {
+                res.render("edit", {
+                    layout: "main",
+                    arrUserData,
+                    helpers: {
+                        showError() {
+                            return "Something went wrong! Please try again and fill out all fields.";
+                        }
+                    }
+                });
+                console.log(err);
             });
-        }
-    });
+    }
 });
 
 app.get("/signature", (req, res) => {
@@ -243,14 +292,11 @@ app.get("/signature", (req, res) => {
 
 app.post("/signature", (req, res) => {
     console.log("request: ", req.body);
-    db.addSignature(
-        req.body["signature"],
-        req.session.userId
-        // modifiy!!! alter your route, so that you pass userId from the cooke to qour query instad of first and last;
-    )
+    db.addSignature(req.body["signature"], req.session.userId)
         .then(result => {
             console.log("success");
-            console.log("result: ", result);
+            req.session.signed = req.session.userId;
+            signed = true;
 
             console.log("current id: ", result.rows[0]["user_id"]);
             res.redirect("/thank-you");
@@ -269,10 +315,6 @@ app.post("/signature", (req, res) => {
 });
 
 app.get("/thank-you", (req, res) => {
-    console.log("*************** /thanks ******************");
-    console.log("req.session: ", req.session);
-    console.log("**************** /thanks *****************");
-
     db.getSignatureImage(req.session.userId)
         .then(result => {
             signatureURL = result.rows[0].signature;
@@ -283,6 +325,7 @@ app.get("/thank-you", (req, res) => {
                 res.render("thank-you", {
                     layout: "main",
                     signatureURL,
+                    signed,
                     numSignatures: result.rows[0].count
                 });
 
@@ -298,14 +341,13 @@ app.post("/thank-you", (req, res) => {
     db.deleteSignature(req.session.userId)
         .then(result => {
             console.log(result);
-            // res.redirect("/signature");
+            req.session.signed = null;
+            (signed = false), res.redirect("/signature");
         })
         .catch(err => {
             console.log(err);
         });
 });
-
-//     delete the users signatureId cookie > req.session.signatureId = null
 
 app.get("/signers", (req, res) => {
     db.getUserData()
@@ -314,6 +356,7 @@ app.get("/signers", (req, res) => {
             let arrSigners = result.rows;
             res.render("signers", {
                 layout: "main",
+                signed,
                 arrSigners
             });
         })
