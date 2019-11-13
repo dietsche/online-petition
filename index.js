@@ -34,7 +34,7 @@ app.use(function(req, res, next) {
     next();
 });
 
-app.get("/", (req, res) => {
+app.get("/signature", (req, res) => {
     console.log("*************** /route ******************");
     console.log("req.session: ", req.session);
     console.log("req.session: ", req.session);
@@ -67,7 +67,7 @@ app.post("/profile", (req, res) => {
 
     db.addUserProfile(age, city, userUrl, req.session.userId)
         .then(() => {
-            res.redirect("/");
+            res.redirect("/signature");
         })
 
         .catch(err => {
@@ -85,7 +85,7 @@ app.post("/profile", (req, res) => {
         });
 });
 
-app.post("/", (req, res) => {
+app.post("/signature", (req, res) => {
     console.log("request: ", req.body);
     db.addSignature(
         req.body["signature"],
@@ -228,6 +228,7 @@ app.get("/login", (req, res) => {
 app.post("/login", (req, res) => {
     let email = req.body["email"];
     console.log("email: ", req.body["email"]);
+    //promise-all and afterwards redirect
     db.getHashedPassword(email)
         .then(result => {
             let savedPassword = result.rows[0].password;
@@ -245,7 +246,7 @@ app.post("/login", (req, res) => {
                             console.log("redirect thanks");
                             res.redirect("/thank-you");
                         } else if (!result.rows[0]) {
-                            res.redirect("/");
+                            res.redirect("/signature");
                             console.log("redirect petition");
                         }
                     });
@@ -260,7 +261,7 @@ app.post("/login", (req, res) => {
         .catch(err => {
             // if insert fails rerender template with err message
 
-            res.render("registration", {
+            res.render("login", {
                 layout: "main",
                 helpers: {
                     showError() {
@@ -272,13 +273,69 @@ app.post("/login", (req, res) => {
         });
 });
 
+app.get("/edit", (req, res) => {
+    db.getUserAndProfileData(req.session.userId)
+        .then(result => {
+            let arrUserData = result.rows;
+            res.render("edit", {
+                layout: "main",
+                arrUserData
+            });
+        })
+        .catch(err => {
+            //add Err message in case fields are empty
+            console.log(err);
+        });
+});
+
+app.post("/edit", (req, res) => {
+    db.updateProfileData(
+        req.body["age"],
+        req.body["city"],
+        req.body["url"],
+        req.session.userId
+    ).then(() => {
+        db.updateUserData(
+            req.session.userId,
+            req.body["first_name"],
+            req.body["last_name"],
+            req.body["email"]
+        )
+            .then(() => {
+                res.render("edit", {
+                    layout: "main"
+                });
+            })
+            .catch(err => {
+                //add Err message in case fields are empty
+                console.log(err);
+            });
+
+        if (req.body["password"] !== "") {
+            hash(req.body["password"]).then(result => {
+                let hashedPassword = result;
+                console.log("hashedPassword: ", hashedPassword);
+                db.updatePassword(req.session.userId, hashedPassword)
+                    .then(result => {
+                        console.log(result);
+                    })
+                    .catch(err => {
+                        //add Err message in case fields are empty
+                        console.log(err);
+                    });
+            });
+        }
+    });
+});
+
 // >> SEECT  to get user infor ba amail address
 // >> SELECT from signatures to find out if they-ve signed
 
-app.listen(8080, () => console.log("server running"));
+app.listen(process.env.PORT || 8080, () => console.log("server running"));
 
 // post req.body enthält input fields first_name und last_name; drittes (verstecktes) input-field wird für Signature angelegt
 
-//see signature again
-
-//dynamic routes with params!
+//what to do if the user hasn't submitted a new Password
+// - query to update "users" and another query to update "user_profiles"
+// - users: update everything
+// - user_profile: optional, wir wissen nicht, ob profile schon angelegt; entweder: INSERT oder UPDATE

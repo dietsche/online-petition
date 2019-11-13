@@ -1,11 +1,46 @@
 var spicedPg = require("spiced-pg");
-var db = spicedPg("postgres:postgres:postgres@localhost:5432/petition");
+var db = spicedPg(
+    process.env.DATABASE_URL ||
+        "postgres:postgres:postgres@localhost:5432/petition"
+);
 
 exports.getSignatures = function() {
     return db.query("SELECT first, last FROM signatures"); //returns promise!
     //change to SINGLE QUOTES!!!
 };
 //add security option!!
+
+exports.getUserAndProfileData = function(userId) {
+    return db.query(
+        `SELECT first, last, email, age, city, url
+        FROM users
+        LEFT JOIN user_profiles
+        ON users.id = user_profiles.user_id
+        WHERE user_profiles.user_id = $1`,
+        [userId]
+    );
+};
+
+exports.updateUserData = function(userId, first, last, email) {
+    return db.query(
+        `UPDATE users
+        SET first = $2, last = $3, email = $4
+        WHERE id = $1`,
+        [userId, first, last, email]
+    );
+};
+
+exports.updateProfileData = function(age, city, url, user_id) {
+    return db.query(
+        `INSERT INTO user_profiles (city, age, url, user_id)
+        VALUES ($1, $2, $3, $4)
+        ON CONFLICT (user_id)
+        DO UPDATE SET city = $1, age = $2, url = $3`,
+        [city, age, url, user_id]
+    );
+};
+
+//>> gehr nur mit UNIQUE-Werten
 
 exports.getUserData = function() {
     return db.query(
@@ -52,6 +87,15 @@ exports.addUserProfile = function(age, city, url, user_id) {
     return db.query(
         "INSERT INTO user_profiles (age, city, url, user_id) VALUES ($1, $2, $3, $4)",
         [age, city, url, user_id]
+    );
+};
+
+exports.updatePassword = function(userId, hashed_password) {
+    return db.query(
+        `UPDATE users
+        SET password = $2
+        WHERE id = $1`,
+        [userId, hashed_password]
     );
 };
 

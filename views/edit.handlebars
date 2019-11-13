@@ -1,0 +1,44 @@
+
+
+<form method="post">
+    {{#arrUserData}}
+    <div class="row">
+        <p>First Name*</p>
+        <input type="text" name="first_name" value="{{first}}">
+    </div>
+    <div class="row">
+        <p>Last Name*</p>
+        <input type="text" name="last_name" value="{{last}}">
+    </div>
+    <div class="row">
+        <p>Email*</p>
+        <input type="email" name="email" value="{{email}}">
+    </div>
+    <div class="row">
+        <p>Password*</p>
+        <input type="password" name="password" value="">
+    </div>
+    <div class="row">
+        <p>Age</p>
+        <input type="text" name="age" value="{{age}}">
+    </div>
+    <div class="row">
+        <p>City</p>
+        <input type="text" name="city" value="{{city}}">
+    </div>
+    <div class="row">
+        <p>Homepage</p>
+        <input type="text" name="url" value="{{url}}">
+    </div>
+    {{/arrUserData}}
+
+    <input type="hidden" name="_csrf" value="{{csrfToken}}">
+
+    <p id="error-message">
+        {{showError}}
+
+    </p>
+
+    <button type="submit" name="submit">UPDATE</button>
+
+</form>
