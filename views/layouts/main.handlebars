@@ -9,10 +9,10 @@
     <body {{#if signed}} class="carrotcursor" {{/if}}>
         <div id="background-layer">
             <div id="navbar">
-                <a href="/edit">Edit Profile</a>
-                <a href="/signers">See Signers</a>
-                <a href="#" id="linkCredits">Credits</a>
-                <a href="/login">Logout</a>
+                {{#if userId}} <a href="/edit">Edit Profile</a> {{/if}}
+                {{#if signed}} <a href="/signers">See Signers</a> {{/if}}
+                 <a href="#" id="linkCredits">Credits</a>
+                 {{#if userId}} <a href="/logout">Logout</a>{{/if}}
             </div>
             <div id="background-image">
             </div>

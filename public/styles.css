@@ -218,8 +218,9 @@ button {
     grid-area: 2 / 2 / 3 / 3;
     justify-self: center;
     align-self: flex-end;
-    width: 242px;
-    height: 330px;
+    margin-bottom: -130px;
+    width: 340px;
+    height: 450px;
     background-image: url(img/paper.png);
     text-align: center;
     padding: 40px 20px 20px 40px;
@@ -263,10 +264,21 @@ button {
     margin-top: 380px;
 }
 
+#thank-you #congrats {
+    display: none;
+}
+
 #thank-you h1 {
     font-size: 50px;
     margin-bottom: 25px;
 }
+
+#thank-you h2 {
+    font-size: 38px;
+    margin-bottom: 25px;
+    color: white;
+}
+
 
 #thank-you div {
     margin-top: 15px;
@@ -347,6 +359,7 @@ button {
 #list-of-signers {
     max-height: 60vh;
     overflow-y: auto;
+    scrollbar-color: white rgb(92, 126, 12);
     padding: 20px;
 }
 
@@ -382,6 +395,7 @@ button {
     background-color: rgba(0, 0, 0, 0.6);
     z-index: 3;
 }
+
 
 .modal {
     display: relative;

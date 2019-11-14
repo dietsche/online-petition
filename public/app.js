@@ -9,6 +9,13 @@ exitModal.on("click", function() {
     modalContainer.show().css("display", "none");
 });
 
+$("#thanks").ready(function() {
+    setTimeout(function() {
+        $("#thanks").css("display", "none");
+        $("#congrats").css("display", "inline");
+    }, 2000);
+});
+
 var canvas = document.getElementById("canvas");
 var context = canvas.getContext("2d");
 let drawing;

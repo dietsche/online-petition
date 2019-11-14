@@ -1,7 +1,9 @@
 
 
         <div id="thank-you" >
-            <h1>Thank you for signing!</h1>
+            <h1 id="thanks">Thank you for signing!</h1>
+            <h2 id="congrats">...and congratulation: You qualified to test the carrot cursor!</h2>
+
             <div> <a href="/signers">See all {{numSignatures}} supporters of the petition</a></div>
             <div id="delete-signature">
                 <form action="/thank-you" method="post">
@@ -11,6 +13,7 @@
             </div>
         </div>
 
+
         <div id="signature-image">
             <div>
                 <img src="img/carrot_badge.png" class="carrot" alt="">
@@ -18,4 +21,3 @@
                 <img src="{{signatureURL}}" class="signature">
             </div>
         </div>
-        <!-- <p>You qualified to use the carrot cursor!<p> -->

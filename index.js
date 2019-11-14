@@ -1,14 +1,21 @@
 const express = require("express");
+const app = express();
 const hb = require("express-handlebars");
 const db = require("./utils/db");
 const cookieSession = require("cookie-session");
-const csurf = require("csurf"); //follow instructions!!!
+const csurf = require("csurf");
 const { hash, compare } = require("./utils/bc");
-const app = express();
+const {
+    requireSignature,
+    requireNoSignature,
+    requireLoggedOutUser,
+    requireLoggedInUser
+} = require("./middleware");
 
 let signatureURL;
 let arrUserData;
-let signed = false;
+let userId;
+let signed;
 
 app.engine("handlebars", hb());
 app.set("view engine", "handlebars");
@@ -32,9 +39,12 @@ app.use(csurf()); //has to be after express.urlencoded (body needs to be there!)
 app.use(function(req, res, next) {
     // res.setHeader('x-frame-options', 'DENY'); >>> verhindert Clickbaiting / using in a Frame
     res.locals.csrfToken = req.csrfToken();
+
     // res.locals.first_name = req.session.firstName; >>> auf jeder Seite verfügbar!!! z.B. um Nutzer zu begrüßen ("hallo ....");
     next();
 });
+
+app.use(requireLoggedInUser);
 
 app.get("/", (req, res) => {
     if (req.session.userId) {
@@ -44,34 +54,39 @@ app.get("/", (req, res) => {
     }
 });
 
+app.get("/logout", (req, res) => {
+    req.session.userId = null;
+    req.session.signed = null;
+    res.redirect("/login");
+});
+
 app.get("/login", (req, res) => {
+    // req.session.userId = null;
+    // req.session.signed = null;
+
     res.render("login", {
-        layout: "main",
-        signed
+        layout: "main"
     });
 });
 
-app.post("/login", (req, res) => {
+app.post("/login", requireLoggedOutUser, (req, res) => {
     let email = req.body["email"];
-    console.log("email: ", req.body["email"]);
     //promise-all and afterwards redirect
     db.getHashedPassword(email)
         .then(result => {
             let savedPassword = result.rows[0].password;
-            // console.log("id: ", result.rows[0].id);
-            let userId = result.rows[0].id;
-            // console.log("savedPassword: ", savedPassword);
+            userId = result.rows[0].id;
             compare(req.body["password"], savedPassword).then(result => {
                 // console.log(result);
                 if (result == true) {
                     req.session.userId = userId;
-                    console.log("true");
                     db.checkIfSigned(req.session.userId).then(result => {
                         console.log("checkIfSigned result: ", result);
                         if (result.rows[0] && result.rows[0]["user_id"]) {
                             console.log("redirect thanks");
                             req.session.signed = req.session.userId;
                             signed = true;
+                            console.log("set signed to TRUE");
                             res.redirect("/thank-you");
                         } else if (!result.rows[0]) {
                             res.redirect("/signature");
@@ -92,8 +107,6 @@ app.post("/login", (req, res) => {
         })
 
         .catch(err => {
-            // if insert fails rerender template with err message
-
             res.render("login", {
                 layout: "main",
                 helpers: {
@@ -106,16 +119,15 @@ app.post("/login", (req, res) => {
         });
 });
 
-app.get("/registration", (req, res) => {
+app.get("/registration", requireLoggedOutUser, (req, res) => {
     res.render("registration", {
         layout: "main"
     });
 });
 
-app.post("/registration", (req, res) => {
+app.post("/registration", requireLoggedOutUser, (req, res) => {
     hash(req.body["password"]).then(result => {
         let hashedPassword = result;
-        console.log("hashedPassword: ", hashedPassword);
 
         db.addUserData(
             req.body["first_name"],
@@ -124,7 +136,6 @@ app.post("/registration", (req, res) => {
             hashedPassword
         )
             .then(result => {
-                console.log("result.id ", result.rows[0].id);
                 req.session.userId = result.rows[0].id;
                 res.redirect("/profile");
             })
@@ -147,7 +158,8 @@ app.post("/registration", (req, res) => {
 app.get("/profile", (req, res) => {
     res.render("profile", {
         layout: "main",
-        signed
+        signed,
+        userId
     });
 });
 
@@ -193,6 +205,7 @@ app.get("/edit", (req, res) => {
             res.render("edit", {
                 layout: "main",
                 signed,
+                userId,
                 arrUserData
             });
         })
@@ -258,7 +271,6 @@ app.post("/edit", (req, res) => {
             )
         ])
             .then(result => {
-                console.log("result:!!! ", result);
                 if (req.session.signed === req.session.userId) {
                     res.redirect("/thank-you");
                 } else {
@@ -280,18 +292,14 @@ app.post("/edit", (req, res) => {
     }
 });
 
-app.get("/signature", (req, res) => {
-    console.log("*************** /route ******************");
-    console.log("req.session: ", req.session);
-    console.log("req.session: ", req.session);
-    console.log("**************** /route *****************");
+app.get("/signature", requireNoSignature, (req, res) => {
     res.render("petition", {
-        layout: "main"
+        layout: "main",
+        userId
     });
 });
 
-app.post("/signature", (req, res) => {
-    console.log("request: ", req.body);
+app.post("/signature", requireNoSignature, (req, res) => {
     db.addSignature(req.body["signature"], req.session.userId)
         .then(result => {
             console.log("success");
@@ -314,11 +322,10 @@ app.post("/signature", (req, res) => {
         });
 });
 
-app.get("/thank-you", (req, res) => {
+app.get("/thank-you", requireSignature, (req, res) => {
     db.getSignatureImage(req.session.userId)
         .then(result => {
             signatureURL = result.rows[0].signature;
-            console.log("SIGN HIER??? ", result.rows[0].signature); //warum ist result nicht direkt signature???
         })
         .then(() => {
             db.countSignatures().then(result => {
@@ -326,10 +333,9 @@ app.get("/thank-you", (req, res) => {
                     layout: "main",
                     signatureURL,
                     signed,
+                    userId,
                     numSignatures: result.rows[0].count
                 });
-
-                console.log("result: ", result.rows[0].count);
             });
         })
         .catch(err => {
@@ -337,26 +343,26 @@ app.get("/thank-you", (req, res) => {
         });
 });
 
-app.post("/thank-you", (req, res) => {
+app.post("/thank-you", requireSignature, (req, res) => {
     db.deleteSignature(req.session.userId)
-        .then(result => {
-            console.log(result);
+        .then(() => {
             req.session.signed = null;
-            (signed = false), res.redirect("/signature");
+            signed = false;
+            res.redirect("/signature");
         })
         .catch(err => {
             console.log(err);
         });
 });
 
-app.get("/signers", (req, res) => {
+app.get("/signers", requireSignature, (req, res) => {
     db.getUserData()
         .then(result => {
-            console.log("result signers", result.rows);
             let arrSigners = result.rows;
             res.render("signers", {
                 layout: "main",
                 signed,
+                userId,
                 arrSigners
             });
         })
@@ -365,16 +371,16 @@ app.get("/signers", (req, res) => {
         });
 });
 
-app.get("/signers/:city", (req, res) => {
+app.get("/signers/:city", requireSignature, (req, res) => {
     const { city } = req.params;
     let citySelection = city;
-    console.log("req.params.city: ", req.params.city);
     db.getUserDataByCity(city)
         .then(result => {
             let arrSigners = result.rows;
             res.render("signers", {
                 layout: "main",
                 arrSigners,
+                userId,
                 citySelection
             });
         })
@@ -382,20 +388,8 @@ app.get("/signers/:city", (req, res) => {
             console.log(err);
         });
 });
-// const { city } = req.params;
-// const selectedProject = projects.find(
-//     item => item.directory.slice(1) == projectName
-// );
-// if (!selectedProject) {
-//     return res.sendStatus(404);
-// }
-
-// >> SEECT  to get user infor ba amail address
-// >> SELECT from signatures to find out if they-ve signed
 
 app.listen(process.env.PORT || 8080, () => console.log("server running"));
-
-// post req.body enthält input fields first_name und last_name; drittes (verstecktes) input-field wird für Signature angelegt
 
 //what to do if the user hasn't submitted a new Password
 // - query to update "users" and another query to update "user_profiles"
