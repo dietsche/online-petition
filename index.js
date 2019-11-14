@@ -61,8 +61,8 @@ app.get("/logout", (req, res) => {
 });
 
 app.get("/login", (req, res) => {
-    // req.session.userId = null;
-    // req.session.signed = null;
+    req.session.userId = null;
+    req.session.signed = null;
 
     res.render("login", {
         layout: "main"
@@ -270,7 +270,7 @@ app.post("/edit", (req, res) => {
                 req.body["email"]
             )
         ])
-            .then(result => {
+            .then(() => {
                 if (req.session.signed === req.session.userId) {
                     res.redirect("/thank-you");
                 } else {

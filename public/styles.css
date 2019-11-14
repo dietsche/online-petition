@@ -1,10 +1,10 @@
+/* MAIN */
 
-* {
-    font-family: Tahoma;
-}
 
 body {
     margin: 0;
+    overflow: auto;
+
 }
 
 .carrotcursor {
@@ -18,10 +18,10 @@ body {
     align-items: center;
     background-image: linear-gradient(rgb(130, 160, 12), rgb(15,56,12));
     background-size: cover;
-    height: 100vh;
-    width: 100vw;
+    min-width: 1400px;
+    min-height: 800px;
+
     margin: 0;
-    overflow: hidden;
     /* adjust to small displays */
 }
 
@@ -31,6 +31,7 @@ body {
     align-self: flex-start;
     justify-content: flex-end;
     margin-top: 15px;
+    z-index: 10;
 }
 
 #navbar a {
@@ -40,40 +41,84 @@ body {
     text-decoration: none;
 }
 
-#top-layer {
-    position: absolute;
-    top: 0;
-    width: 100%;
-    height: 210px;
-    background-color: rgba(0,0,0,.15);
-    margin: 0;
-}
-
 #background-image {
     grid-area: 1 / 1 / 3 / 3;
     background-image: url(img/rabbit_badge.png);
     background-size: 700px;
-    background-repeat: no-repeat;
     background-position: top left;
-    margin-top: 100px;
+    background-repeat: no-repeat;
     height: 100%;
 }
 
 
+/* GENERIC */
+* {
+    font-family: Tahoma;
+}
 
 h1 {
     color: rgb(240,240,240);
-    /* text-shadow: 3px 3px 5px rgb(240,80,5); */
     font-size: 55px;
     margin-bottom: 10px;
-
     letter-spacing: 3px;
     font-weight: bolder;
 }
 
+form {
+    grid-area: 2 / 2 / 3 /3;
+    justify-self: center;
+    align-self: center;
+
+    display: flex;
+    flex-direction: column;
+    width: 350px;
+    /* height: 420px; */
+    background: rgba(200, 200, 200, .5);
+    border-radius: 4px;
+    padding: 10px 25px;
+    color: rgb(70,70,70);
+    margin-right: 40px;
+
+}
+
+form .row  {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+input {
+    margin: 15px 0 5px 6px;
+    padding: 5px;
+    border-radius: 3px;
+    width: 220px;
+    height: 26px;
+    font-size: 17px;
+}
+
+button {
+    align-self: center;
+    width: 100px;
+    height: 40px;
+    border-radius: 3px;
+    border: 2px rgb(80,80,80) solid;
+    /* margin-top: 10px; */
+    background: rgb(240,80,5);
+    color: white;
+    font-size: 18px;
+}
+
+#error-message {
+    color: darkred;
+}
 
 
-/* REGISTRATION */
+
+/* REGISTRATION AND LOGIN */
+#form-registration {
+    align-self: flex-end;
+}
+
 #form-login {
     grid-area: 2 / 2 / 3 /3;
     justify-self: center;
@@ -85,12 +130,8 @@ h1 {
     font-size: 16px;
 }
 
-/* LOGIN */
 
-
-
-/* PETITION */
-
+/* SIGNATURE */
 
 #please-sign {
     grid-area: 1 / 1 / 3 / 3;
@@ -119,6 +160,7 @@ top: 20px;
     height: 70px;
 
 } */
+
 .description {
     grid-area: 1 / 2 / 2 /3 ;
     font-size: 26px;
@@ -139,24 +181,6 @@ top: 20px;
 }
 
 
-
-form {
-    grid-area: 2 / 2 / 3 /3;
-    justify-self: center;
-    align-self: center;
-
-    display: flex;
-    flex-direction: column;
-    width: 350px;
-    /* height: 420px; */
-    background: rgba(200, 200, 200, .5);
-    border-radius: 4px;
-    padding: 10px 25px;
-    color: rgb(70,70,70);
-    margin-right: 40px;
-
-}
-
 #form-signature {
     justify-self: right;
     align-self: flex-end;
@@ -166,21 +190,6 @@ form {
     margin-bottom: 10%;
     margin-right: 10%;
 
-}
-
-form .row  {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-input {
-    margin: 15px 0 5px 6px;
-    padding: 5px;
-    border-radius: 3px;
-    width: 220px;
-    height: 26px;
-    font-size: 17px;
 }
 
 #canvas-layer {
@@ -201,57 +210,6 @@ canvas {
 
 }
 
-button {
-    align-self: center;
-    width: 100px;
-    height: 40px;
-    border-radius: 3px;
-    border: 2px rgb(80,80,80) solid;
-    /* margin-top: 10px; */
-    background: rgb(240,80,5);
-    color: white;
-    font-size: 18px;
-}
-
-
-#signature-image {
-    grid-area: 2 / 2 / 3 / 3;
-    justify-self: center;
-    align-self: flex-end;
-    margin-bottom: -130px;
-    width: 340px;
-    height: 450px;
-    background-image: url(img/paper.png);
-    text-align: center;
-    padding: 40px 20px 20px 40px;
-}
-
-#signature-image div {
-    margin-top: 20px;
-
-}
-
-#signature-image img {
-    height: 70px;
-
-}
-
-#signature-image p {
-    font-size: 40px;
-    font-family: Garamond;
-}
-
-#signature-image img.signature {
-     width: 240px;
-     height: 75px;
-
-}
-
-
-
-#error-message {
-    color: darkred;
-}
 
 /* thank-you */
 #thank-you {
@@ -315,6 +273,39 @@ button {
     background: rgba(0,0,0,0);
     cursor: pointer;
 }
+
+#signature-image {
+    grid-area: 2 / 2 / 3 / 3;
+    justify-self: center;
+    align-self: flex-end;
+    margin-bottom: -130px;
+    width: 340px;
+    height: 450px;
+    background-image: url(img/paper.png);
+    text-align: center;
+    padding: 40px 20px 20px 40px;
+}
+
+#signature-image div {
+    margin-top: 20px;
+
+}
+
+#signature-image img {
+    height: 70px;
+}
+
+#signature-image p {
+    font-size: 40px;
+    font-family: Garamond;
+}
+
+#signature-image img.signature {
+     width: 240px;
+     height: 75px;
+
+}
+
 
 /* SIGNERS */
 
@@ -380,9 +371,6 @@ button {
     margin-bottom: 40px;
 }
 
-#form-registration {
-    align-self: flex-end;
-}
 /* MODAL */
 
 .modal-container {
@@ -406,8 +394,13 @@ button {
     background-color: white;
 }
 
-.modal p {
+.modal h2 {
+    color: rgb(80,80,80);
+}
+
+.modal div {
     font-size: 16px;
+    color: rgb(80,80,80);
 }
 
 .modal div {
@@ -418,7 +411,7 @@ button {
     position: relative;
     float: right;
     font-family: Tahoma;
-    font-size: 20px;
+    font-size: 28px;
     cursor: pointer;
 }
 

@@ -18,26 +18,25 @@ $("#thanks").ready(function() {
 
 var canvas = document.getElementById("canvas");
 var context = canvas.getContext("2d");
-let drawing;
-let prevPosition = [];
-let canvasData;
+var drawing;
+var prevPosition = [];
+var canvasData;
 
-$("#canvas").on("mousedown", function() {
+$(canvas).on("mousedown", function() {
     drawing = true;
     prevPosition = [];
     drawSignature();
 });
 
-$("#canvas").on("mouseup", function() {
+$(canvas).on("mouseup", function() {
     drawing = false;
     canvasData = canvas.toDataURL("image/png");
     $("#signature").val(canvasData);
-    console.log("canvasData: ", canvasData);
     drawSignature();
 });
 
 function drawSignature() {
-    $("#canvas").on("mousemove", function(e) {
+    $(canvas).on("mousemove", function(e) {
         if (!drawing) {
             return;
         } else {
