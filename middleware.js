@@ -12,7 +12,7 @@ exports.requireLoggedInUser = function(req, res, next) {
 
 exports.requireLoggedOutUser = function(req, res, next) {
     if (req.session.userId) {
-        let userId = req.session.userId;
+        // let userId = req.session.userId;
         res.redirect("/signature");
     } else {
         next();
@@ -21,7 +21,7 @@ exports.requireLoggedOutUser = function(req, res, next) {
 
 exports.requireNoSignature = function(req, res, next) {
     if (req.session.signed) {
-        let signed = true;
+        // let signed = true;
         res.redirect("/thank-you");
     } else {
         next();

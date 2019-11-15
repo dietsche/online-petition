@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+module.exports = app; //export for testing
 const hb = require("express-handlebars");
 const db = require("./utils/db");
 const cookieSession = require("cookie-session");
@@ -52,12 +53,6 @@ app.get("/", (req, res) => {
     } else {
         res.redirect("/registration");
     }
-});
-
-app.get("/logout", (req, res) => {
-    req.session.userId = null;
-    req.session.signed = null;
-    res.redirect("/login");
 });
 
 app.get("/login", (req, res) => {
@@ -120,6 +115,9 @@ app.post("/login", requireLoggedOutUser, (req, res) => {
 });
 
 app.get("/registration", requireLoggedOutUser, (req, res) => {
+    req.session.userId = null;
+    req.session.signed = null;
+
     res.render("registration", {
         layout: "main"
     });
@@ -137,6 +135,7 @@ app.post("/registration", requireLoggedOutUser, (req, res) => {
         )
             .then(result => {
                 req.session.userId = result.rows[0].id;
+                userId = result.rows[0].id;
                 res.redirect("/profile");
             })
             .catch(err => {
@@ -157,9 +156,7 @@ app.post("/registration", requireLoggedOutUser, (req, res) => {
 
 app.get("/profile", (req, res) => {
     res.render("profile", {
-        layout: "main",
-        signed,
-        userId
+        layout: "main"
     });
 });
 
@@ -184,8 +181,6 @@ app.post("/profile", (req, res) => {
         })
 
         .catch(err => {
-            // if insert fails rerender template with err message
-
             res.render("profile", {
                 layout: "main",
                 helpers: {
@@ -389,7 +384,11 @@ app.get("/signers/:city", requireSignature, (req, res) => {
         });
 });
 
-app.listen(process.env.PORT || 8080, () => console.log("server running"));
+if (require.main == module) {
+    app.listen(process.env.PORT || 8080);
+}
+
+// app.listen(process.env.PORT || 8080, () => console.log("server running"));
 
 //what to do if the user hasn't submitted a new Password
 // - query to update "users" and another query to update "user_profiles"

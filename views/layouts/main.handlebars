@@ -6,13 +6,13 @@
         <link rel="stylesheet" href="/styles.css">
 
     </head>
-    <body {{#if signed}} class="carrotcursor" {{/if}}>
+    <body {{#if signed}} class="carrotcursor"{{/if}}>
         <div id="background-layer">
             <div id="navbar">
                 {{#if userId}} <a href="/edit">Edit Profile</a> {{/if}}
                 {{#if signed}} <a href="/signers">See Signers</a> {{/if}}
                  <a href="#" id="linkCredits">Credits</a>
-                 {{#if userId}} <a href="/logout">Logout</a>{{/if}}
+                 {{#if userId}} <a href="/login">Logout</a>{{/if}}
             </div>
             <div id="background-image">
             </div>
@@ -33,8 +33,6 @@
                         </div>
             </div>
 
-            <!-- <div id="darkness">
-            </div> -->
 
         </div>
 
