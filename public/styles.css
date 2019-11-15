@@ -197,7 +197,7 @@ canvas {
 
 
 /* thank-you */
-#thank-you {
+#thank-you-container {
     grid-area: 1 / 2 / 2 / 3;
     display: flex;
     flex-direction: column;
@@ -208,24 +208,27 @@ canvas {
     margin-top: 380px;
 }
 
-#thank-you #congrats {
+#thank-you-container #congrats {
     display: none;
 }
 
-#thank-you h1 {
+#thank-you-container h1 {
     font-size: 50px;
     margin-bottom: 25px;
 }
 
-
-#thank-you div {
+#thank-you-container div {
     margin-top: 15px;
 }
 
-#thank-you a {
+#thank-you-container a {
     font-size: 20px;
     color: rgb(222,222,222);
 
+}
+#thank-you-text {
+    max-height: 200px;
+    margin-bottom: 20px;
 }
 
 #delete-signature  {
