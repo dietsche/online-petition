@@ -11,9 +11,11 @@ exitModal.on("click", function() {
 
 $("#thanks").ready(function() {
     setTimeout(function() {
-        $("#thanks").css("display", "none");
-        $("#congrats").css("display", "inline");
-    }, 2000);
+        $("#thanks").fadeOut(1500);
+        setTimeout(function() {
+            $("#congrats").css("display", "inline");
+        }, 1500);
+    }, 500);
 });
 
 var canvas = document.getElementById("canvas");
