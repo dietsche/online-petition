@@ -16,8 +16,3 @@ Spiced Academy student project: Website which provides the opportunity to sign a
 - Handlebars
 - jQuery
   
-# Preview
-Login Page
-
-Signature Page
-
