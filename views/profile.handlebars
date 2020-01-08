@@ -1,28 +1,20 @@
-
-
-    <form method="post">
-        <h2>Please add some information</h2>
-
-        <div class="row">
-            <p>Age</p>
-            <input type="text" name="age" value="">
-        </div>
-        <div class="row">
-            <p>City</p>
-            <input type="text" name="city" value="">
-        </div>
-        <div class="row">
-            <p>Homepage</p>
-            <input type="text" name="url" value="">
-        </div>
-
-        <input type="hidden" name="_csrf" value="{{csrfToken}}">
-
-        <p id="error-message">
-            {{showError}}
-
-        </p>
-
-        <button type="submit" name="submit">SAVE</button>
-
-    </form>
+<form method="post">
+    <h2>Please add some information</h2>
+    <div class="row">
+        <p>Age</p>
+        <input type="text" name="age" value="">
+    </div>
+    <div class="row">
+        <p>City</p>
+        <input type="text" name="city" value="">
+    </div>
+    <div class="row">
+        <p>Homepage</p>
+        <input type="text" name="url" value="">
+    </div>
+    <input type="hidden" name="_csrf" value="{{csrfToken}}">
+    <p id="error-message">
+        {{showError}}
+    </p>
+    <button type="submit" name="submit">SAVE</button>
+</form>

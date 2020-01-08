@@ -1,25 +1,21 @@
+<div id="thank-you-container" >
+    <div id="thank-you-text">
+        <h1 id="thanks">Thank you for signing!</h1>
+        <h1 id="congrats">Yay! You can now test the carrot cursor!</h1>
+    </div>
+    <div> <a href="/signers">See all {{numSignatures}} supporters of the petition</a></div>
+    <div id="delete-signature">
+        <form action="/thank-you" method="post">
+            <button type="submit" name="submit">Delete your signature</button>
+            <input type="hidden" name="_csrf" value="{{csrfToken}}">
+        </form>
+    </div>
+</div>
 
-
-        <div id="thank-you-container" >
-            <div id="thank-you-text">
-                <h1 id="thanks">Thank you for signing!</h1>
-                <h1 id="congrats">Yay! You can now test the carrot cursor!</h1>
-            </div>
-
-            <div> <a href="/signers">See all {{numSignatures}} supporters of the petition</a></div>
-            <div id="delete-signature">
-                <form action="/thank-you" method="post">
-                    <button type="submit" name="submit">Delete your signature</button>
-                    <input type="hidden" name="_csrf" value="{{csrfToken}}">
-                </form>
-            </div>
-        </div>
-
-
-        <div id="signature-image">
-            <div>
-                <img src="img/carrot_badge.png" class="carrot" alt="">
-                <p> Petition </p>
-                <img src="{{signatureURL}}" class="signature">
-            </div>
-        </div>
+<div id="signature-image">
+    <div>
+        <img src="img/carrot_badge.png" class="carrot" alt="">
+        <p> Petition </p>
+        <img src="{{signatureURL}}" class="signature">
+    </div>
+</div>

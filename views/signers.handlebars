@@ -1,21 +1,17 @@
-
-    <div id="container-list">
-        <div>
-            <h2>{{numSignatures}} Signers of the Petition</h2>
-             {{#if citySelection}} <h3> from {{citySelection}} (<a href='../signers'>see all</a>) </h3> {{/if}}
-        </div>
-
-        <div id="list-of-signers">
-            <ol>
-                {{#arrSigners}}
-                    {{#if url}}
-                        <li><a href='{{url}}'> {{first}} {{last}} </a> {{#if city}} - <a href='/signers/{{city}}'> {{city}} </a> {{/if}}</li>
-                    {{else}}
-                        <li>{{first}} {{last}}  {{#if city}} - <a href='/signers/{{city}}'> {{city}} </a> {{/if}}</li>
-                    {{/if}}
-
-                {{/arrSigners}}
-            </ol>
-        </div>
-
+<div id="container-list">
+    <div>
+        <h2>{{numSignatures}} Signers of the Petition</h2>
+         {{#if citySelection}} <h3> from {{citySelection}} (<a href='../signers'>see all</a>) </h3> {{/if}}
     </div>
+    <div id="list-of-signers">
+        <ol>
+            {{#arrSigners}}
+                {{#if url}}
+                    <li><a href='{{url}}'> {{first}} {{last}} </a> {{#if city}} - <a href='/signers/{{city}}'> {{city}} </a> {{/if}}</li>
+                {{else}}
+                    <li>{{first}} {{last}}  {{#if city}} - <a href='/signers/{{city}}'> {{city}} </a> {{/if}}</li>
+                {{/if}}
+            {{/arrSigners}}
+        </ol>
+    </div>
+</div>

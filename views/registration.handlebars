@@ -1,40 +1,29 @@
+<div class="description">
+    <h1>Cursors to Carrots!</h1>
+    <h2>Sign our petition to change the cursor to a carrot.</h2>
+</div>
 
-
-    <div class="description">
-        <h1>Cursors to Carrots!</h1>
-        <h2>Sign our petition to change the cursor to a carrot.</h2>
-
+<form method="post" id="form-registration">
+    <div class="row">
+        <p>First Name</p>
+        <input type="text" name="first_name" placeholder="First Name" value="">
     </div>
-
-
-    <form method="post" id="form-registration">
-        <div class="row">
-            <p>First Name</p>
-            <input type="text" name="first_name" value="">
-        </div>
-        <div class="row">
-            <p>Last Name</p>
-            <input type="text" name="last_name" value="">
-        </div>
-        <div class="row">
-            <p>Email</p>
-            <input type="email" name="email" value="">
-        </div>
-        <div class="row">
-            <p>Password</p>
-            <input type="password" name="password" value="">
-        </div>
-
-
-        <input type="hidden" name="_csrf" value="{{csrfToken}}">
-
-
-        <p id="error-message">
-            {{showError}}
-
-        </p>
-
-        <button type="submit" name="submit">SIGN UP</button>
-
-        <p id="log-in-info">If you have already registered, please <a href="/login">log in</a>.</p>
-    </form>
+    <div class="row">
+        <p>Last Name</p>
+        <input type="text" name="last_name" placeholder="Last Name" value="">
+    </div>
+    <div class="row">
+        <p>Email</p>
+        <input type="email" name="email" placeholder="Email" value="">
+    </div>
+    <div class="row">
+        <p>Password</p>
+        <input type="password" name="password" placeholder="Password" value="">
+    </div>
+    <input type="hidden" name="_csrf" value="{{csrfToken}}">
+    <p id="error-message">
+        {{showError}}
+    </p>
+    <button type="submit" name="submit">SIGN UP</button>
+    <p id="log-in-info">If you have already registered, please <a href="/login">log in</a>.</p>
+</form>

@@ -5,9 +5,8 @@ var db = spicedPg(
 );
 
 exports.getSignatures = function() {
-    return db.query("SELECT first, last FROM signatures"); //returns promise!
+    return db.query("SELECT first, last FROM signatures");
 };
-//add security option!!
 
 exports.getUserAndProfileData = function(userId) {
     return db.query(
@@ -42,7 +41,6 @@ exports.updateProfileData = function(age, city, url, user_id) {
 exports.deleteSignature = function(user_id) {
     return db.query(`DELETE FROM signatures WHERE user_id = $1`, [user_id]);
 };
-//>> gehr nur mit UNIQUE-Werten
 
 exports.getUserData = function() {
     return db.query(
@@ -101,25 +99,19 @@ exports.updatePassword = function(userId, hashed_password) {
     );
 };
 
-//hier wird immer wieder die gleiche sign + id in die DB geschrieben!
 exports.addSignature = function(signature, user_id) {
     return db.query(
-        "INSERT INTO signatures (signature, user_id) VALUES ($1, $2) RETURNING user_id", //$arg prevents SQL-injection!!!
+        "INSERT INTO signatures (signature, user_id) VALUES ($1, $2) RETURNING user_id",
         [signature, user_id]
     );
 };
 
 exports.getSignatureImage = function(userId) {
     return db.query(
-        `SELECT signature FROM signatures WHERE user_id = ${userId}` //$arg prevents SQL-injection!!!
+        `SELECT signature FROM signatures WHERE user_id = ${userId}`
     );
 };
 
 exports.getHashedPassword = function(email) {
     return db.query(`SELECT password, id FROM users WHERE email = $1`, [email]);
 };
-
-// SELECT
-// WHERE city = $1
-// becomes =>
-// WHERE LOWER(city) = LOWER($1)

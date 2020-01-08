@@ -1,32 +1,23 @@
 
-
-
 <div class="description">
     <h1>Cursors to Carrots!</h1>
     <h2>Sign our petition to change the cursor to a carrot.</h2>
-
 </div>
 
-    <form method="post" id="form-login">
-        <h2>Login</h2>
-
-        <div class="row">
-            <p>Email</p>
-            <input type="email" name="email" value="">
-        </div>
-        <div class="row">
-            <p>Password</p>
-            <input type="password" name="password" value="">
-        </div>
-
-        <input type="hidden" name="_csrf" value="{{csrfToken}}">
-
-        <p id="error-message">
-            {{showError}}
-
-        </p>
-
-        <button type="submit" name="submit">LOG IN</button>
-        <p id="log-in-info">If you have have no login data, please <a href="/registration">register</a>.</p>
-
-    </form>
+<form method="post" id="form-login">
+    <h2>Login</h2>
+    <div class="row">
+        <p>Email</p>
+        <input type="email" name="email" value="">
+    </div>
+    <div class="row">
+        <p>Password</p>
+        <input type="password" name="password" value="">
+    </div>
+    <input type="hidden" name="_csrf" value="{{csrfToken}}">
+    <p id="error-message">
+        {{showError}}
+    </p>
+    <button type="submit" name="submit">LOG IN</button>
+    <p id="log-in-info">If you have have no login data, please <a href="/registration">register</a>.</p>
+</form>

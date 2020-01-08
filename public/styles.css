@@ -1,10 +1,8 @@
 /* MAIN */
 
-
 body {
     margin: 0;
     overflow: auto;
-
 }
 
 .carrotcursor {
@@ -22,7 +20,6 @@ body {
     min-height: 700px;
     height: 100vh;
     margin: 0;
-    /* adjust to small displays */
 }
 
 #navbar {
@@ -50,8 +47,8 @@ body {
     height: 100%;
 }
 
-
 /* GENERIC */
+
 * {
     font-family: Tahoma;
 }
@@ -95,12 +92,10 @@ input {
 }
 
 button {
-    align-self: center;
     width: 100px;
     height: 40px;
     border-radius: 3px;
     border: 2px rgb(80,80,80) solid;
-    /* margin-top: 10px; */
     background: rgb(240,80,5);
     color: rgb(222,222,222);
     font-size: 18px;
@@ -110,9 +105,8 @@ button {
     color: darkred;
 }
 
-
-
 /* REGISTRATION AND LOGIN */
+
 #form-registration {
     padding-top: 20px;
     align-self: flex-end;
@@ -131,7 +125,6 @@ button {
     font-size: 16px;
 }
 
-
 /* SIGNATURE */
 
 #please-sign {
@@ -149,7 +142,6 @@ button {
     grid-area: 1 / 2 / 2 /3 ;
     font-size: 26px;
     max-width: 750px;
-    /* color: rgb(229, 216, 191); */
     color: rgb(222, 222, 222);
     display: flex;
     align-items: center;
@@ -160,11 +152,9 @@ button {
 
 }
 
-
 .description h2 {
     font-size: 40px;
 }
-
 
 #form-signature {
     justify-self: right;
@@ -187,7 +177,6 @@ button {
     background-position: center;
 }
 
-
 canvas {
     background: rgba (0,0,0,0);
     border: 2px rgb(212, 212, 212) solid;
@@ -195,8 +184,8 @@ canvas {
 
 }
 
+/* THANK-YOU */
 
-/* thank-you */
 #thank-you-container {
     grid-area: 1 / 2 / 2 / 3;
     display: flex;
@@ -375,7 +364,6 @@ canvas {
     border-radius: 15px;
     padding: 10px 20px;
     background-color: rgb(229, 216, 191);
-;
 }
 
 .modal h2 {

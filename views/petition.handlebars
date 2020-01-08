@@ -1,31 +1,18 @@
 
+<div class="description">
+        <h1>Please sign our petition to change the default cursor to a carrot!</h1>
+</div>
 
-
-    <!-- <div id="please-sign">
-
-    </div> -->
-
-    <div class="description">
-            <h1>Please sign our petition to change the default cursor to a carrot!</h1>
-    </div>
-
-
-    <form method="post" id="form-signature">
-
-        <input type="hidden" name="signature" value="" id="signature">
-        <input type="hidden" name="_csrf" value="{{csrfToken}}">
-
-        <label for="">
-                <div id="canvas-layer">
-                    <canvas id="canvas" width="440" height="150"></canvas>
-                </div>
-        </label>
-
-        <p id="error-message">
-            {{showError}}
-
-        </p>
-
-
-        <button type="submit" name="submit">SUBMIT</button>
-    </form>
+<form method="post" id="form-signature">
+    <input type="hidden" name="signature" value="" id="signature">
+    <input type="hidden" name="_csrf" value="{{csrfToken}}">
+    <label for="">
+            <div id="canvas-layer">
+                <canvas id="canvas" width="440" height="150"></canvas>
+            </div>
+    </label>
+    <p id="error-message">
+        {{showError}}
+    </p>
+    <button type="submit" name="submit">SUBMIT</button>
+</form>
